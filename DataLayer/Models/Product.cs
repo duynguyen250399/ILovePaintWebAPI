@@ -20,8 +20,7 @@ namespace DataLayer.Models
         [Required]
         public int Quantity { get; set; }
         public DateTime? ManufactureDate { get; set; }
-        [StringLength(100)]
-        public string Image { get; set; }
+        public string Image { get; set; }     
         public int Status { get; set; }
         public virtual IEnumerable<Color> Colors { get; set; }
         public Nullable<int> ProviderID { get; set; }

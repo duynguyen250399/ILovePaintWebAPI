@@ -61,6 +61,62 @@ namespace DataLayer.Migrations
                     b.ToTable("Color");
                 });
 
+            modelBuilder.Entity("DataLayer.Models.Order", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.OrderItem", b =>
+                {
+                    b.Property<long>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<long>("OrderID")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("ProductPrice")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("OrderID");
+
+                    b.ToTable("OrderItems");
+                });
+
             modelBuilder.Entity("DataLayer.Models.Product", b =>
                 {
                     b.Property<int>("ID")
@@ -76,8 +132,7 @@ namespace DataLayer.Migrations
                         .HasMaxLength(300);
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("ManufactureDate")
                         .HasColumnType("datetime2");
@@ -151,6 +206,15 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Models.Product", "Product")
                         .WithMany("Colors")
                         .HasForeignKey("ProductID");
+                });
+
+            modelBuilder.Entity("DataLayer.Models.OrderItem", b =>
+                {
+                    b.HasOne("DataLayer.Models.Order", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataLayer.Models.Product", b =>

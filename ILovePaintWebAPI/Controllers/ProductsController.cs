@@ -46,8 +46,9 @@ namespace ILovePaintWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddProduct(Product newProduct)
+        public async Task<ActionResult> AddProduct([FromForm] Product newProduct)
         {
+            
             if(newProduct == null)
             {
                 return BadRequest("Product is null!");
@@ -70,7 +71,7 @@ namespace ILovePaintWebAPI.Controllers
         }
 
         [HttpPut]   
-        public async Task<ActionResult> UpdateProduct(Product product)
+        public async Task<ActionResult> UpdateProduct([FromForm] Product product)
         {
             if(product == null)
             {

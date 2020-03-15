@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ServiceLayer.CategoryService;
+using ServiceLayer.ImageService;
 using ServiceLayer.ProductService;
 using ServiceLayer.ProviderService;
 
@@ -36,11 +37,18 @@ namespace ILovePaintWebAPI
                 options.UseSqlServer(Configuration.GetConnectionString("DevConnectionString"));
             });
 
+            services.AddDistributedMemoryCache();
+            services.AddSession( options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
+            });
+
             services.AddCors();
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IImageService, ImageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,12 +59,16 @@ namespace ILovePaintWebAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseSession();
+
             app.UseCors(options =>
             {
                 options.WithOrigins("http://localhost:4200")
                 .AllowAnyMethod()
                 .AllowAnyHeader();
             });
+
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 
