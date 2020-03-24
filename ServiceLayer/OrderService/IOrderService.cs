@@ -1,4 +1,5 @@
-﻿using DataLayer.Models;
+﻿using DataLayer.Entities;
+using DataLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,9 +9,10 @@ namespace ServiceLayer.OrderService
 {
     public interface IOrderService
     {
-        Task<Order> AddOrderAsync(Order order);
-        Task<Order> DeleteOrderAsync(long id);
+        Order AddOrder(OrderModel orderData);
+        Order DeleteOrder(long id);
         IEnumerable<Order> GetOrders();
         Order GetOrderByID(long id);
+        Order UpdateOrder(UpdateOrderModel model);
     }
 }

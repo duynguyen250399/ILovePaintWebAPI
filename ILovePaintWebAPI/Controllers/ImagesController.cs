@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DataLayer.Models;
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -77,7 +77,7 @@ namespace ILovePaintWebAPI.Controllers
                         await stream.FlushAsync();
                     }
 
-                    return Ok();
+                    return Ok(new { message = "Image has been uploaded!"});
                 }
                 catch (Exception e)
                 {

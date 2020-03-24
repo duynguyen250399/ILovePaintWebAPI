@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Data;
-using DataLayer.Models;
+using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace ServiceLayer.ProviderService

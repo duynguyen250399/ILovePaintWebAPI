@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DataLayer.Models;
+using DataLayer.Entities;
+using ILovePaintWebAPI.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.ProductService;
@@ -23,10 +24,15 @@ namespace ILovePaintWebAPI.Controllers
         [HttpGet]
         public IActionResult GetProducts()
         {
+            
             var products = _productService.GetProducts();
-            if(products.ToList().Count == 0)
+            if (products.ToList().Count == 0)
             {
                 return NotFound("Products not found!");
+            }
+            foreach (var p in products)
+            {
+                p.Image = Utils.ImagePathToLink(p.ID);
             }
 
             return Ok(products);
@@ -35,12 +41,14 @@ namespace ILovePaintWebAPI.Controllers
         [HttpGet]
         [Route("{id}")]
         public IActionResult GetProductById(int id)
-        {           
+        {
             var product = _productService.GetProductById(id);
-            if(product == null)
+            if (product == null)
             {
                 return NotFound($"Product with id {id} not found!");
             }
+
+            product.Image = Utils.ImagePathToLink(product.ID);
 
             return Ok(product);
         }
@@ -48,20 +56,20 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> AddProduct([FromForm] Product newProduct)
         {
-            
-            if(newProduct == null)
+
+            if (newProduct == null)
             {
                 return BadRequest("Product is null!");
             }
 
-            return Ok(await _productService.AddProduct(newProduct));
+            return Ok(await _productService.AddProductAsync(newProduct));
         }
 
         [HttpDelete]
         [Route("{id}")]
-        public async Task<ActionResult> DeleteProduct(int id)
+        public ActionResult DeleteProduct(int id)
         {
-            var product = await _productService.DeleteProduct(id);
+            var product = _productService.DeleteProduct(id);
             if (product == null)
             {
                 return BadRequest("Product is null!");
@@ -70,27 +78,27 @@ namespace ILovePaintWebAPI.Controllers
             return Ok(product);
         }
 
-        [HttpPut]   
+        [HttpPut]
         public async Task<ActionResult> UpdateProduct([FromForm] Product product)
         {
-            if(product == null)
+            if (product == null)
             {
                 return BadRequest("Invalid product!");
             }
 
-            if(product.ID == 0)
+            if (product.ID == 0)
             {
                 return BadRequest("Missing Product ID field!");
             }
 
             Product oldProduct = _productService.GetProductById(product.ID);
-            if(oldProduct == null)
+            if (oldProduct == null)
             {
                 return NotFound($"Product with id {product.ID} not found!");
             }
 
             Product newProduct = await _productService.UpdateProduct(product);
-          
+
             return Ok(newProduct);
 
         }

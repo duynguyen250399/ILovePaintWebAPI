@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Data;
-using DataLayer.Models;
+using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
-using ServiceLayer.CategoryService;
-using ServiceLayer.ProviderService;
-
 namespace ServiceLayer.ProductService
 {
     public class ProductService : IProductService
@@ -21,7 +18,7 @@ namespace ServiceLayer.ProductService
 
         }
 
-        public async Task<Product> AddProduct(Product newProduct)
+        public async Task<Product> AddProductAsync(Product newProduct)
         {
             await _context.Products.AddAsync(newProduct);
             await _context.SaveChangesAsync();
@@ -29,8 +26,15 @@ namespace ServiceLayer.ProductService
 
         }
 
-        public async Task<Product> DeleteProduct(int id)
+        public Product DeleteProduct(int id)
         {
+            var productVolumes = _context.ProductVolumes.
+                Where(pv => pv.ProductID == id);
+            if(productVolumes != null)
+            {
+                _context.ProductVolumes.RemoveRange(productVolumes);
+            }
+
             var product = _context.Products
                 .Where(p => p.ID == id)
                 .FirstOrDefault();
@@ -40,7 +44,7 @@ namespace ServiceLayer.ProductService
             }
 
             _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return product;
         }
@@ -70,13 +74,17 @@ namespace ServiceLayer.ProductService
 
         public Product GetProductById(int id)
         {
-            return _context.Products
+            var p = _context.Products
                 .Where(product => product.ID == id)
                 .Include(product => product.Category)
                 .Include(product => product.Provider)
                 .Include(product => product.Colors)
+                .Include(product => product.ProductVolumes)         
                 .AsNoTracking()
                 .FirstOrDefault();
+
+          
+            return p;
         }
 
         public Product GetProductByName(string name)
@@ -92,10 +100,14 @@ namespace ServiceLayer.ProductService
 
         public IEnumerable<Product> GetProducts()
         {
-            return _context.Products
+            var products = _context.Products
                 .Include(product => product.Category)
                 .Include(product => product.Provider)
-                .Include(product => product.Colors);
+                .Include(product => product.Colors)
+                .Include(product => product.ProductVolumes);
+
+            return products;
         }
+
     }
 }

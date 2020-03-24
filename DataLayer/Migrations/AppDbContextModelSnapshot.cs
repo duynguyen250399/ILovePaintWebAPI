@@ -19,7 +19,7 @@ namespace DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("DataLayer.Models.Category", b =>
+            modelBuilder.Entity("DataLayer.Entities.Category", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -36,7 +36,7 @@ namespace DataLayer.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Color", b =>
+            modelBuilder.Entity("DataLayer.Entities.Color", b =>
                 {
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(10)")
@@ -61,7 +61,7 @@ namespace DataLayer.Migrations
                     b.ToTable("Color");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Order", b =>
+            modelBuilder.Entity("DataLayer.Entities.Order", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -71,21 +71,44 @@ namespace DataLayer.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("Gender")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("IsMember")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("OrderDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ShipperID")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
                     b.HasKey("ID");
+
+                    b.HasIndex("ShipperID");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.OrderItem", b =>
+            modelBuilder.Entity("DataLayer.Entities.OrderItem", b =>
                 {
                     b.Property<long>("ID")
                         .ValueGeneratedOnAdd()
@@ -95,29 +118,31 @@ namespace DataLayer.Migrations
                     b.Property<float>("Amount")
                         .HasColumnType("real");
 
-                    b.Property<long>("OrderID")
+                    b.Property<long?>("OrderID")
                         .HasColumnType("bigint");
 
                     b.Property<int>("ProductID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<float>("ProductPrice")
-                        .HasColumnType("real");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<float>("UnitPrice")
+                        .HasColumnType("real");
+
+                    b.Property<float>("VolumeValue")
+                        .HasColumnType("real");
 
                     b.HasKey("ID");
 
                     b.HasIndex("OrderID");
 
+                    b.HasIndex("ProductID");
+
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Product", b =>
+            modelBuilder.Entity("DataLayer.Entities.Product", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -134,28 +159,13 @@ namespace DataLayer.Migrations
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ManufactureDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(50)")
                         .HasMaxLength(50);
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
                     b.Property<int?>("ProviderID")
                         .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Weight")
-                        .HasColumnType("real");
 
                     b.HasKey("ID");
 
@@ -166,7 +176,36 @@ namespace DataLayer.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Provider", b =>
+            modelBuilder.Entity("DataLayer.Entities.ProductVolume", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int?>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<float>("VolumeValue")
+                        .HasColumnType("real");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("ProductVolumes");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.Provider", b =>
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
@@ -201,31 +240,136 @@ namespace DataLayer.Migrations
                     b.ToTable("Providers");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Color", b =>
+            modelBuilder.Entity("DataLayer.Entities.Shipper", b =>
                 {
-                    b.HasOne("DataLayer.Models.Product", "Product")
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHashed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordSalted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Salary")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Shippers");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.User", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHashed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordSalted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("RewardPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.Color", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Product", "Product")
                         .WithMany("Colors")
                         .HasForeignKey("ProductID");
                 });
 
-            modelBuilder.Entity("DataLayer.Models.OrderItem", b =>
+            modelBuilder.Entity("DataLayer.Entities.Order", b =>
                 {
-                    b.HasOne("DataLayer.Models.Order", null)
+                    b.HasOne("DataLayer.Entities.Shipper", "Shipper")
+                        .WithMany()
+                        .HasForeignKey("ShipperID");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.OrderItem", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderID")
+                        .HasForeignKey("OrderID");
+
+                    b.HasOne("DataLayer.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataLayer.Models.Product", b =>
+            modelBuilder.Entity("DataLayer.Entities.Product", b =>
                 {
-                    b.HasOne("DataLayer.Models.Category", "Category")
+                    b.HasOne("DataLayer.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID");
 
-                    b.HasOne("DataLayer.Models.Provider", "Provider")
+                    b.HasOne("DataLayer.Entities.Provider", "Provider")
                         .WithMany()
                         .HasForeignKey("ProviderID");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.ProductVolume", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Product", null)
+                        .WithMany("ProductVolumes")
+                        .HasForeignKey("ProductID");
                 });
 #pragma warning restore 612, 618
         }

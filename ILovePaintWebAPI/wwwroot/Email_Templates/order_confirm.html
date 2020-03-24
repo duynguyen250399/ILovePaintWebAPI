@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+
+
+    <h1 style="text-align: center; margin: 25px 0">Order Confirmation</h1>
+    <div>
+        <div style="background-color: rgba(214, 212, 212, 0.705);
+        padding: 20px 10px;">
+            <div style="padding: 5px 0; text-align: center;">
+                <a style="text-decoration: none;
+                color: black;
+                font-size: 32px;
+                font-weight: bold;
+                " href="https://localhost:44385">
+                    ILovePaint
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+    <h2 class="text-center my-5" style="text-align: center; margin: 30px 0; font-weight: 500;">
+        Thank you for buying our products!
+    </h2>
+
+    <div style="margin: 30px 0;">
+        <div style="padding: 5px 0; margin: 5px 15px; font-size = 20px"><b>Order No:</b> #{0}</div>
+        <div style="padding: 5px 0; margin: 5px 15px; font-size = 20px"><b>Order Date:</b> {1}</div>
+    </div>
+
+    <h2><b>Your information:</b></h2>
+    <ul style="margin: 20px 10px;
+    line-height: 2.5em;">
+        <li><b>Customer name: </b> {2}</li>
+        <li><b>Phone number: </b> {3}</li>
+        <li><b>Email: </b> {4}</li>
+        <li><b>Address: </b> {5}</li>
+    </ul>
+
+    <h2 style="margin: 30px 0;">Your order details:</h2>
+    <table style="width: 70%;
+        margin: 10px auto; border-collapse: collapse; text-align: center;">
+        <tr style="font-weight: bold;
+            background-color: rgba(214, 212, 212, 0.705);         
+           ">
+
+            <th style="padding: 25px 5px;">#</th>
+            <th>Product</th>
+            <th>Unit Price</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+        </tr>
+        <tbody>
+            {6}
+        </tbody>
+
+    </table>
+
+    <p style="font-size: 14px; font-style: italic; margin: 30px 0;">If you have any problem, please call via phone
+        number:
+        <b>0385126346</b>
+        or send to email: <b>ilovepaint371@gmail.com</b>
+    </p>
+
+    <p style="line-height: .5em;">Thank you,</p>
+    <b>ILovePaint CEO</b>
+    <footer style="background-color: rgba(214, 212, 212, 0.705);text-align: center;padding: 20px 0; margin: 15px 0;">
+        ILovePaint Copyright@ 2020 - DuyNK
+    </footer>
+
+
+</body>
+
+</html>
