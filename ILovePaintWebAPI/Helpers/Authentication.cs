@@ -1,4 +1,5 @@
 ﻿using DataLayer.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -14,25 +15,31 @@ namespace ILovePaintWebAPI.Helpers
     public class Authentication
     {
         private readonly IConfiguration _configuration;
+        private readonly UserManager<User> _userManager;
 
-        public Authentication(IConfiguration configuration)
+        public Authentication(IConfiguration configuration, UserManager<User> userManager)
         {
             _configuration = configuration;
+            _userManager = userManager;
         }
 
-        public string GenerateJwtToken(User user)
+        public async Task<string> GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
             // generate encoded secret key
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
 
+            IdentityOptions identityOptions = new IdentityOptions();
+            var role = await _userManager.GetRolesAsync(user);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 // generate payload: user details
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)                      
+                    new Claim(ClaimTypes.NameIdentifier, user.Id),
+                    new Claim(identityOptions.ClaimsIdentity.RoleClaimType, role.FirstOrDefault())
                 }),
                 // generate expire time validation
                 Expires = DateTime.Now.AddMinutes(30),          

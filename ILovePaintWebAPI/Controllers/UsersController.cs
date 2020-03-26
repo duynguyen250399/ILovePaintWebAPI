@@ -19,7 +19,6 @@ using ServiceLayer.UserService;
 
 namespace ILovePaintWebAPI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -39,23 +38,22 @@ namespace ILovePaintWebAPI.Controllers
             _userManager = userManager;
             _env = env;
         }
-
-        [AllowAnonymous]
+    
         [HttpPost]
         [Route("authenticate")]
-        public async Task<IActionResult> Login(AuthenticateModel model)
+        public async Task<IActionResult> UserLogin(AuthenticateModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
             if(user == null)
             {
-                return NotFound(new { message = "Incorrect username or password!" });
+                return BadRequest(new { message = "Incorrect username or password!" });
             }
 
             var validUser = await _userManager.CheckPasswordAsync(user, model.Password);
 
             if (!validUser)
             {
-                return NotFound(new { message = "Incorrect username or password!" });
+                return BadRequest(new { message = "Incorrect username or password!" });
             }
 
             if (!user.EmailConfirmed)
@@ -63,9 +61,9 @@ namespace ILovePaintWebAPI.Controllers
                 return BadRequest(new { status = "Login failed", message = "This account is not activated yet" });
             }
 
-            Authentication auth = new Authentication(_configuration);
+            Authentication auth = new Authentication(_configuration, _userManager);
 
-            string tokenString = auth.GenerateJwtToken(user);
+            string tokenString = await auth.GenerateJwtToken(user);
 
             return Ok(new
             {
@@ -75,6 +73,7 @@ namespace ILovePaintWebAPI.Controllers
 
         [HttpGet]
         [Route("profile")]
+        [Authorize(Roles = "Member,Admin")]
         public async Task<IActionResult> GetUserProfile()
         {
             var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
@@ -98,8 +97,8 @@ namespace ILovePaintWebAPI.Controllers
             });
         }
 
-        [HttpPost]
-        [AllowAnonymous]
+
+        [HttpPost]    
         public async Task<IActionResult> RegisterUser(UserRegistrationModel model)
         {
             if(model == null)
@@ -160,8 +159,7 @@ namespace ILovePaintWebAPI.Controllers
            
         }
 
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet]       
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
@@ -184,6 +182,73 @@ namespace ILovePaintWebAPI.Controllers
             }
 
             return Content("Failed to confirm account!");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [Route("admin")]
+        public async Task<IActionResult> RegisterAdmin(UserRegistrationModel model)
+        {
+            if (model == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Registration data is null!"
+                });
+            }
+
+            var existingUser = await _userManager.FindByNameAsync(model.Username);
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "This username is already taken!" });
+            }
+            existingUser = await _userManager.FindByEmailAsync(model.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { message = "This email is already taken!" });
+            }
+
+            var userEntity = new User
+            {
+                UserName = model.Username,
+                Email = model.Email,
+                FullName = model.FullName,
+                PhoneNumber = model.PhoneNumber,
+                Birthdate = model.Birthdate,
+                Address = model.Address,
+                EmailConfirmed = true,
+                RewardPoints = 0
+            };
+
+            var addUserResult = await _userManager.CreateAsync(userEntity, model.Password);
+            if (addUserResult.Succeeded)
+            {
+                var addRoleResult = await _userManager.AddToRoleAsync(userEntity, "Admin");
+                if (addRoleResult.Succeeded)
+                {
+                    model.Password = null;
+                    return Ok(new
+                    {
+                        message = "Register admin user successfully!",
+                        data = model
+                    });
+                }
+
+                return Content("Failed to add admin role!");
+            }
+
+            return Content("Failed to register admin account!");
+
+        }
+
+        [HttpGet]
+        [Route("profile/admin")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAdminInfo()
+        {
+            var admin = await _userManager.FindByNameAsync("admin");
+
+            return Ok(admin);
         }
 
     }
