@@ -32,11 +32,10 @@ namespace ILovePaintWebAPI.Helpers
                 // generate payload: user details
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim("FullName", user.FullName)
+                    new Claim(ClaimTypes.NameIdentifier, user.Id)                      
                 }),
                 // generate expire time validation
-                Expires = DateTime.Now.AddMinutes(1),
+                Expires = DateTime.Now.AddMinutes(30),          
                 // define symmetric key and security algorithm
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)

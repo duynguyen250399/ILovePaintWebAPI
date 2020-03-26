@@ -58,6 +58,7 @@ namespace ILovePaintWebAPI
                 options.Password.RequireUppercase = false;
 
                 options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedAccount = true;
 
             })
                 .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
@@ -68,11 +69,12 @@ namespace ILovePaintWebAPI
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
-                //options.SaveToken = true;
+                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -83,12 +85,7 @@ namespace ILovePaintWebAPI
                 };
             });
 
-            services.AddDistributedMemoryCache();
-            services.AddSession( options =>
-            {
-                options.IdleTimeout = TimeSpan.FromMinutes(15);
-            });
-
+         
             services.AddCors();
 
             services.AddScoped<IProductService, ProductService>();
@@ -109,11 +106,11 @@ namespace ILovePaintWebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseSession();
+          
 
             app.UseCors(options =>
             {
-                options.WithOrigins("http://localhost:4200")
+                options.WithOrigins(Configuration["frontendEnv:host"])
                 .AllowAnyMethod()
                 .AllowAnyHeader();
             });

@@ -43,13 +43,24 @@ namespace ILovePaintWebAPI.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("authenticate")]
-        public IActionResult AuthenticateUser(AuthenticateModel model)
+        public async Task<IActionResult> Login(AuthenticateModel model)
         {
-            var user = _userService.Authenticate(model.Username, model.Password);
-
-            if (user == null)
+            var user = await _userManager.FindByNameAsync(model.Username);
+            if(user == null)
             {
-                return BadRequest(new { message = "Username or password is incorrect!" });
+                return NotFound(new { message = "Incorrect username or password!" });
+            }
+
+            var validUser = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (!validUser)
+            {
+                return NotFound(new { message = "Incorrect username or password!" });
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return BadRequest(new { status = "Login failed", message = "This account is not activated yet" });
             }
 
             Authentication auth = new Authentication(_configuration);
@@ -58,25 +69,33 @@ namespace ILovePaintWebAPI.Controllers
 
             return Ok(new
             {
-                ID = user.Id,
-                FullName = user.FullName,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                Token = tokenString
+                token = tokenString
             });
         }
 
-        [HttpGet]  
-        public IActionResult GetUser()
+        [HttpGet]
+        [Route("profile")]
+        public async Task<IActionResult> GetUserProfile()
         {
-            var user = _userService.GetAllUsers();
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+
+            var user = await _userManager.FindByIdAsync(userId);
 
             if(user == null)
             {
-                return NotFound(new { message = "Users not found!" });
+                return NotFound(new { message = "User not found!" });
             }
 
-            return Ok(user);
+            return Ok(new { 
+                Username = user.UserName,
+                FullName = user.FullName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = user.Address,
+                RewardPoints = user.RewardPoints,
+                Birthdate = user.Birthdate,
+                Image = user.Image
+            });
         }
 
         [HttpPost]
@@ -110,7 +129,8 @@ namespace ILovePaintWebAPI.Controllers
                 PhoneNumber = model.PhoneNumber,
                 Birthdate = model.Birthdate,
                 Address = model.Address,
-                EmailConfirmed = false
+                EmailConfirmed = false,
+                RewardPoints = 0
             };
 
             var addUserResult = await _userManager.CreateAsync(userEntity, model.Password);
