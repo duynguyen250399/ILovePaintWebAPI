@@ -14,7 +14,7 @@ namespace ServiceLayer.ProductService
         Product GetProductByColorId(string colorId);
         Product GetProductByColorName(string colorName);
         Task<Product> AddProductAsync(Product newProduct);    
-        Task<Product> UpdateProduct(Product product);
+        Product UpdateProduct(Product product);
         Product DeleteProduct(int id);
     }
 }

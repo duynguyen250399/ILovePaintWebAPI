@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using DataLayer.Data;
 using DataLayer.Entities;
+using DataLayer.Models;
 
 namespace ServiceLayer.UserService
 {
@@ -21,27 +23,22 @@ namespace ServiceLayer.UserService
             return _context.Users;
         }
 
-        public User GetUserById(int id)
-        {
-            return _context.Users.Where(user => user.ID == id)
-                .FirstOrDefault();
-        }
-
         public User Authenticate(string username, string password)
         {
-            var user = _context.Users.Where(u => u.Username == username)
+            var user = _context.Users.Where(u => u.UserName == username)
                 .FirstOrDefault();
             if(user == null)
             {
                 return null;
             }
 
-            if (!user.PasswordHashed.Equals(password))
-            {
-                return null;
-            }
+            //if (!user.PasswordHashed.Equals(password))
+            //{
+            //    return null;
+            //}
 
             return user;
         }
+
     }
 }

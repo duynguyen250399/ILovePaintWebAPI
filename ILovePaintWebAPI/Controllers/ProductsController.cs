@@ -79,7 +79,7 @@ namespace ILovePaintWebAPI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateProduct([FromForm] Product product)
+        public IActionResult UpdateProduct([FromForm] Product product)
         {
             if (product == null)
             {
@@ -97,7 +97,12 @@ namespace ILovePaintWebAPI.Controllers
                 return NotFound($"Product with id {product.ID} not found!");
             }
 
-            Product newProduct = await _productService.UpdateProduct(product);
+            if(product.Image == null)
+            {
+                product.Image = oldProduct.Image;
+            }
+
+            Product newProduct = _productService.UpdateProduct(product);
 
             return Ok(newProduct);
 

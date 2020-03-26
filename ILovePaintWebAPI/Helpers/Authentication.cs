@@ -32,7 +32,7 @@ namespace ILovePaintWebAPI.Helpers
                 // generate payload: user details
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Username),
+                    new Claim(ClaimTypes.Name, user.UserName),
                     new Claim("FullName", user.FullName)
                 }),
                 // generate expire time validation

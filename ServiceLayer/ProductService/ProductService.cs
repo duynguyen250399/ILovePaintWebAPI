@@ -49,10 +49,10 @@ namespace ServiceLayer.ProductService
             return product;
         }
 
-        public async Task<Product> UpdateProduct(Product product)
+        public Product UpdateProduct(Product product)
         {
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
 
             return product;
         }

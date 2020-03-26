@@ -124,7 +124,7 @@ namespace ILovePaintWebAPI.Controllers
                     }
 
                     p.Image = (subPath + imageName).Replace("\\", "/");
-                    await _productService.UpdateProduct(p);
+                    _productService.UpdateProduct(p);
 
                     return Ok("Image uploaded...");
                 }

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataLayer.Data;
+using DataLayer.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -46,6 +48,19 @@ namespace ILovePaintWebAPI
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DevConnectionString"));
             });
+
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+
+                options.SignIn.RequireConfirmedEmail = true;
+
+            })
+                .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
             var key = Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]);
 

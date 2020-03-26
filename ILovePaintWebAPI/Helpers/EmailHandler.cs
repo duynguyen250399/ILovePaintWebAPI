@@ -18,6 +18,11 @@ namespace ILovePaintWebAPI.Helpers
             _env = env;
         }
 
+        public EmailHandler()
+        {
+
+        }
+
         public bool SendOderConfirmEmail(OrderEmailModel order)
         {
 
@@ -47,6 +52,35 @@ namespace ILovePaintWebAPI.Helpers
 
             return true;
 
+        }
+
+        public bool SendAccountConfirmEmail(string email, string displayName, string subject, string confirmationLink) 
+        {
+            if(string.IsNullOrEmpty(displayName) || string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(confirmationLink))
+            {
+                return false;
+            }
+
+            SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
+            client.EnableSsl = true;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential("ilovepaint371@gmail.com", "bangbangzz371");
+
+            MailMessage mail = new MailMessage();
+            mail.From = new MailAddress("ilovepaint371@gmail.com", displayName);
+            mail.To.Add(email);
+            mail.Subject = subject;
+
+            mail.IsBodyHtml = true;
+
+            EmailTemplateProcessor templateProcessor = new EmailTemplateProcessor(_env);
+            var accountConfirmEmail = templateProcessor.GenerateAccountConfirmEmail(confirmationLink);
+
+            mail.Body = accountConfirmEmail;
+
+            client.Send(mail);
+
+            return true;
         }
     }
 }

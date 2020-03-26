@@ -72,5 +72,20 @@ namespace ILovePaintWebAPI.Helpers
             return tableBody;
         }
 
+        public string GenerateAccountConfirmEmail(string confirmationToken)
+        {
+            var path = _env.WebRootPath + "\\Email_Templates\\account_confirm.html";
+            string contents = "";
+
+            using(var reader = File.OpenText(path))
+            {
+                contents = reader.ReadToEnd();
+            }
+
+            contents = string.Format(contents, confirmationToken);
+
+            return contents;
+        }
+
     }
 }
