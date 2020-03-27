@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20200327032657_AddProductCommentEntity3")]
-    partial class AddProductCommentEntity3
+    [Migration("20200327133250_InitialCreate123")]
+    partial class InitialCreate123
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -40,27 +40,56 @@ namespace DataLayer.Migrations
 
             modelBuilder.Entity("DataLayer.Entities.Color", b =>
                 {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(100)")
-                        .HasMaxLength(100);
+                    b.Property<string>("ColorCode")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductID")
+                    b.Property<int>("ProductID")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
 
                     b.HasIndex("ProductID");
 
-                    b.ToTable("Color");
+                    b.ToTable("Colors");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.CommentReply", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductCommentID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReplyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Role")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ProductCommentID");
+
+                    b.HasIndex("UserID");
+
+                    b.ToTable("CommentReplies");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Order", b =>
@@ -186,7 +215,9 @@ namespace DataLayer.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CommentDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValue(new DateTime(2020, 3, 27, 20, 32, 49, 945, DateTimeKind.Local).AddTicks(8728));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -531,7 +562,22 @@ namespace DataLayer.Migrations
                 {
                     b.HasOne("DataLayer.Entities.Product", "Product")
                         .WithMany("Colors")
-                        .HasForeignKey("ProductID");
+                        .HasForeignKey("ProductID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.CommentReply", b =>
+                {
+                    b.HasOne("DataLayer.Entities.ProductComment", null)
+                        .WithMany("CommentReplies")
+                        .HasForeignKey("ProductCommentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DataLayer.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserID");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.Order", b =>

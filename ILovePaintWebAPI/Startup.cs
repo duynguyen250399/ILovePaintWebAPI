@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ServiceLayer.CategoryService;
+using ServiceLayer.ColorService;
 using ServiceLayer.CommentService;
 using ServiceLayer.ImageService;
 using ServiceLayer.OrderService;
@@ -90,6 +91,7 @@ namespace ILovePaintWebAPI
             services.AddCors();
 
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IImageService, ImageService>();

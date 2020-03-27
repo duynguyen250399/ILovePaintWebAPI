@@ -57,15 +57,6 @@ namespace ServiceLayer.ProductService
             return product;
         }
 
-        public Product GetProductByColorId(string colorId)
-        {
-            return _context.Products
-                .Include(product => product.Colors)
-                .Where(product => product.Colors
-                                    .Where(color => color.ID == colorId)
-                                    .FirstOrDefault().ID == colorId
-                ).FirstOrDefault();
-        }
 
         public Product GetProductByColorName(string colorName)
         {

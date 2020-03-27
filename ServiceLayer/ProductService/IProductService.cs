@@ -11,7 +11,7 @@ namespace ServiceLayer.ProductService
         IEnumerable<Product> GetProducts();
         Product GetProductById(int id);
         Product GetProductByName(string name);
-        Product GetProductByColorId(string colorId);
+        //Product GetProductByColorId(string colorId);
         Product GetProductByColorName(string colorName);
         Task<Product> AddProductAsync(Product newProduct);    
         Product UpdateProduct(Product product);

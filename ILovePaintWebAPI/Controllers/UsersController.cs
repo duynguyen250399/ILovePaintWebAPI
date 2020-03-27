@@ -184,7 +184,7 @@ namespace ILovePaintWebAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [Route("admin")]
         public async Task<IActionResult> RegisterAdmin(UserRegistrationModel model)
         {

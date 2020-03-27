@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DataLayer.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate123 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,9 +27,19 @@ namespace DataLayer.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
                     Email = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
                     PasswordHash = table.Column<string>(nullable: true),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
                     FullName = table.Column<string>(nullable: true),
                     Address = table.Column<string>(nullable: true),
                     Image = table.Column<string>(nullable: true),
@@ -258,23 +268,53 @@ namespace DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Color",
+                name: "Colors",
                 columns: table => new
                 {
-                    ID = table.Column<string>(maxLength: 10, nullable: false),
-                    Name = table.Column<string>(maxLength: 30, nullable: false),
-                    Image = table.Column<string>(maxLength: 100, nullable: true),
-                    ProductID = table.Column<int>(nullable: true)
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(nullable: true),
+                    ColorCode = table.Column<string>(nullable: true),
+                    ProductID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Color", x => x.ID);
+                    table.PrimaryKey("PK_Colors", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Color_Products_ProductID",
+                        name: "FK_Colors_Products_ProductID",
                         column: x => x.ProductID,
                         principalTable: "Products",
                         principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductComments",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserID = table.Column<string>(nullable: false),
+                    Content = table.Column<string>(nullable: true),
+                    CommentDate = table.Column<DateTime>(nullable: false, defaultValue: new DateTime(2020, 3, 27, 20, 32, 49, 945, DateTimeKind.Local).AddTicks(8728)),
+                    ProductID = table.Column<int>(nullable: false),
+                    Role = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductComments", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_ProductComments_Products_ProductID",
+                        column: x => x.ProductID,
+                        principalTable: "Products",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductComments_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -330,6 +370,35 @@ namespace DataLayer.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "CommentReplies",
+                columns: table => new
+                {
+                    ID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductCommentID = table.Column<int>(nullable: false),
+                    UserID = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    ReplyDate = table.Column<DateTime>(nullable: false),
+                    Role = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CommentReplies", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_CommentReplies_ProductComments_ProductCommentID",
+                        column: x => x.ProductCommentID,
+                        principalTable: "ProductComments",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CommentReplies_AspNetUsers_UserID",
+                        column: x => x.UserID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -358,9 +427,31 @@ namespace DataLayer.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Color_ProductID",
-                table: "Color",
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Colors_ProductID",
+                table: "Colors",
                 column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentReplies_ProductCommentID",
+                table: "CommentReplies",
+                column: "ProductCommentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommentReplies_UserID",
+                table: "CommentReplies",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderItems_OrderID",
@@ -376,6 +467,16 @@ namespace DataLayer.Migrations
                 name: "IX_Orders_ShipperID",
                 table: "Orders",
                 column: "ShipperID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductComments_ProductID",
+                table: "ProductComments",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductComments_UserID",
+                table: "ProductComments",
+                column: "UserID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CategoryID",
@@ -411,7 +512,10 @@ namespace DataLayer.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Color");
+                name: "Colors");
+
+            migrationBuilder.DropTable(
+                name: "CommentReplies");
 
             migrationBuilder.DropTable(
                 name: "OrderItems");
@@ -423,13 +527,16 @@ namespace DataLayer.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "ProductComments");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Shippers");
