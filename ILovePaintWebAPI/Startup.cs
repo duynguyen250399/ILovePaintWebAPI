@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ServiceLayer.CategoryService;
+using ServiceLayer.CommentService;
 using ServiceLayer.ImageService;
 using ServiceLayer.OrderService;
 using ServiceLayer.ProductService;
@@ -96,6 +97,7 @@ namespace ILovePaintWebAPI
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IShipperService, ShipperService>();
             services.AddScoped<IProductVolumeService, ProductVolumeService>();
+            services.AddScoped<IProductCommentService, ProductCommentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

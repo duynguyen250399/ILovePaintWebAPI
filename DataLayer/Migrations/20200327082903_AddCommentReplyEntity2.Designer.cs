@@ -4,14 +4,16 @@ using DataLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200327082903_AddCommentReplyEntity2")]
+    partial class AddCommentReplyEntity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,7 +44,7 @@ namespace DataLayer.Migrations
                         .HasColumnType("nvarchar(10)")
                         .HasMaxLength(10);
 
-                    b.Property<string>("ColorCode")
+                    b.Property<string>("Image")
                         .HasColumnType("nvarchar(100)")
                         .HasMaxLength(100);
 
@@ -217,7 +219,7 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("CommentDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 27, 17, 26, 5, 111, DateTimeKind.Local).AddTicks(6245));
+                        .HasDefaultValue(new DateTime(2020, 3, 27, 15, 29, 2, 728, DateTimeKind.Local).AddTicks(4065));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");

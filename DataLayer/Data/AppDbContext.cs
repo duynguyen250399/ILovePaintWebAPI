@@ -1,6 +1,7 @@
 ﻿using DataLayer.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace DataLayer.Data
 {
@@ -18,12 +19,15 @@ namespace DataLayer.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Order> Orders { get; set; }     
         public DbSet<Shipper> Shippers { get; set; }
-        
+        public DbSet<ProductComment> ProductComments { get; set; }
+        public DbSet<CommentReply> CommentReplies { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<ProductComment>().Property("CommentDate").HasDefaultValue(DateTime.Now);
         }
     }
 }

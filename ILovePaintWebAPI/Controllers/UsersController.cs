@@ -85,8 +85,7 @@ namespace ILovePaintWebAPI.Controllers
                 return NotFound(new { message = "User not found!" });
             }
 
-            return Ok(new { 
-                Username = user.UserName,
+            return Ok(new {                
                 FullName = user.FullName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
