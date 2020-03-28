@@ -58,11 +58,6 @@ namespace ILovePaintWebAPI.Controllers
                 return BadRequest(new { message = "Color is null!" });
             }
 
-            //if (color.ProductID == 0)
-            //{
-            //    return BadRequest(new { message = "Missing product id field!" });
-            //}
-
             var newColors = await _colorService.AddColorsAsync(model.Colors);
 
             if(newColors == null)
@@ -89,6 +84,45 @@ namespace ILovePaintWebAPI.Controllers
             }
 
             return Ok(colors);
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeleteColor(int id)
+        {
+            var deletedColor = _colorService.DeleteColor(id);
+            if(deletedColor == null)
+            {
+                return NotFound(new { message = "Color not found!" });
+            }
+
+            return Ok(new
+            {
+                status = "success",
+                message = "Color deleted"           
+            });
+        }
+
+        [HttpPut]
+        public IActionResult UpdateColor(Color color)
+        {
+            if(color == null)
+            {
+                return BadRequest(new { message = "Color is null!" });
+            }
+
+            if(color.ID == 0)
+            {
+                return BadRequest(new { message = "Missing color id!" });
+            }
+
+            var updatedColor = _colorService.UpdateColor(color);
+
+            return Ok(new
+            {
+                status = "success",
+                message = "Color updated"
+            });
         }
 
 

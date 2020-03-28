@@ -9,8 +9,7 @@ namespace ServiceLayer.UserService
 {
     public interface IUserService
     {
-        IEnumerable<User> GetAllUsers();
-        User Authenticate(string username, string password);
+        User AddRewardPoints(User user, int points);
       
     }
 }

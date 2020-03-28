@@ -18,27 +18,14 @@ namespace ServiceLayer.UserService
             _context = context;
         }
 
-        public IEnumerable<User> GetAllUsers()
+        public User AddRewardPoints(User user, int points)
         {
-            return _context.Users;
-        }
+            user.RewardPoints = user.RewardPoints + points;
+            _context.Update(user);
 
-        public User Authenticate(string username, string password)
-        {
-            var user = _context.Users.Where(u => u.UserName == username)
-                .FirstOrDefault();
-            if(user == null)
-            {
-                return null;
-            }
-
-            //if (!user.PasswordHashed.Equals(password))
-            //{
-            //    return null;
-            //}
+            _context.SaveChanges();
 
             return user;
         }
-
     }
 }

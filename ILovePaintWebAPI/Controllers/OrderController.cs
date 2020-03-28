@@ -1,13 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using DataLayer.Entities;
 using DataLayer.Models;
 using ILovePaintWebAPI.Helpers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.OrderService;
+using ServiceLayer.UserService;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -16,24 +20,30 @@ namespace ILovePaintWebAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
         private readonly IWebHostEnvironment _env;
 
-        public OrderController(IOrderService orderService, IWebHostEnvironment env)
+        public OrderController(IOrderService orderService, IUserService userService, UserManager<User> userManager, IWebHostEnvironment env)
         {
             _orderService = orderService;
+            _userService = userService;
+            _userManager = userManager;
             _env = env;
 
         }
 
         [HttpPost]
-        public IActionResult PostOrder([FromBody] OrderModel orderData)
+        public async Task<IActionResult> PostOrder([FromBody] OrderModel orderData)
         {
             if (orderData == null || orderData.OrderItems == null || orderData.OrderItems.Count == 0
                 || orderData.Order == null)
             {
                 return BadRequest("Invalid order information");
             }
-            //return Ok(orderData.OrderItems);
+
+            float total = 0;
+
 
             var newOrder = _orderService.AddOrder(orderData);
 
@@ -41,6 +51,7 @@ namespace ILovePaintWebAPI.Controllers
             List<OrderItemEmail> orderItemEmails = new List<OrderItemEmail>();
             foreach (var item in orderData.OrderItems)
             {
+                total += item.Amount;
                 var i = new OrderItemEmail
                 {
                     ProductName = item.ProductName,
@@ -62,11 +73,29 @@ namespace ILovePaintWebAPI.Controllers
 
             emailHandler.SendOderConfirmEmail(orderEmail);
 
+            // plus reward points for member after purchasing products
+            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+            var user = await _userManager.FindByIdAsync(userId);
+            var rewardPointSuccess = "";
+            if (user != null)
+            {
+                var updatedUser = _userService.AddRewardPoints(user, (int)Math.Floor(total / 10000));
+                if(updatedUser != null)
+                {
+                    rewardPointSuccess = "Success";
+                }
+                else
+                {
+                    rewardPointSuccess = "Fail";
+                }
+             }
+
             return Ok(new
             {
                 message = "Order has been sent",
                 confirm_email = "sent",
-                order = newOrder
+                order = newOrder,
+                addRewardPoints = rewardPointSuccess
             });
         }
 

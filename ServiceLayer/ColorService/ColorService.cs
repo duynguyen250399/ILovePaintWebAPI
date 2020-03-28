@@ -61,7 +61,15 @@ namespace ServiceLayer.ColorService
 
         public Color DeleteColor(int id)
         {
-            throw new NotImplementedException();
+            var color = _context.Colors.Where(c => c.ID == id).FirstOrDefault();
+            if(color == null)
+            {
+                return null;
+            }
+
+            _context.Colors.Remove(color);
+            _context.SaveChanges();
+            return color;
         }
 
         public IEnumerable<Color> GetColors(int productID)
@@ -71,7 +79,9 @@ namespace ServiceLayer.ColorService
 
         public Color UpdateColor(Color color)
         {
-            throw new NotImplementedException();
+            _context.Colors.Update(color);
+            _context.SaveChanges();
+            return color;
         }
     }
 }
