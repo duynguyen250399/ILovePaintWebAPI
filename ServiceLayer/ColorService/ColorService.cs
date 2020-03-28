@@ -36,7 +36,8 @@ namespace ServiceLayer.ColorService
         private bool ColorExist(Color color)
         {
             return _context.Colors
-                .Where(c => (c.ColorCode == color.ColorCode || c.Name == color.Name) && c.ProductID == color.ProductID)
+                .Where(c => (c.ColorCode.ToLower() == color.ColorCode.ToLower() || 
+                c.Name.ToLower() == color.Name.ToLower()) && c.ProductID == color.ProductID)
                 .AsNoTracking()
                .FirstOrDefault() != null;
         }
