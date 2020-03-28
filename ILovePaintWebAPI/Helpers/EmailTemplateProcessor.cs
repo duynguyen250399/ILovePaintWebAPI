@@ -22,11 +22,11 @@ namespace ILovePaintWebAPI.Helpers
         {
             var path = _env.WebRootPath + "\\Email_Templates\\order_confirm.html";
             string contents = "";
-      
-            
+
+
             using (StreamReader reader = File.OpenText(path))
             {
-               contents = reader.ReadToEnd();
+                contents = reader.ReadToEnd();
             }
 
             string orderItemTableBody = GenerateOrderItemTable(order.OrderItems);
@@ -51,7 +51,7 @@ namespace ILovePaintWebAPI.Helpers
             {
                 string row = "<tr style=\"background - color: white; border - bottom: 1px solid gray; \">" +
                                 $"<td style = \"padding: 25px 5px;\" >{count++}</td>" +
-                                $"<td>{item.ProductName} {item.VolumeValue}(L)</td>" +
+                                $"<td>{item.ProductName} {item.VolumeValue}(L) - <b style='color: {item.ColorCode}'>{item.ColorName} ({item.ColorCode})</b></td>" +
                                 $"<td>{item.UnitPrice}</td>" +
                                 $"<td>{item.Quantity}</td >" +
                                 $"<td><b>{item.UnitPrice * item.Quantity}</b></td >" +
@@ -60,7 +60,7 @@ namespace ILovePaintWebAPI.Helpers
                 total += item.UnitPrice * item.Quantity;
             }
 
-            
+
             string totalRow = "<tr>" +
                 "<td colspan = \"5\" style = \"text-align: center; padding: 25px 5px;\">" +
                        $"Total: <b>{total} VNĐ</b>" +
@@ -77,7 +77,7 @@ namespace ILovePaintWebAPI.Helpers
             var path = _env.WebRootPath + "\\Email_Templates\\account_confirm.html";
             string contents = "";
 
-            using(var reader = File.OpenText(path))
+            using (var reader = File.OpenText(path))
             {
                 contents = reader.ReadToEnd();
             }

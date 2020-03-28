@@ -4,14 +4,16 @@ using DataLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200328080840_MofidyOrderItemEntity2")]
+    partial class MofidyOrderItemEntity2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,10 +126,15 @@ namespace DataLayer.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ShipperID")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("ShipperID");
 
                     b.ToTable("Orders");
                 });
@@ -216,7 +223,7 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("CommentDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 28, 16, 25, 1, 530, DateTimeKind.Local).AddTicks(301));
+                        .HasDefaultValue(new DateTime(2020, 3, 28, 15, 8, 39, 662, DateTimeKind.Local).AddTicks(9266));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -304,6 +311,48 @@ namespace DataLayer.Migrations
                     b.ToTable("Providers");
                 });
 
+            modelBuilder.Entity("DataLayer.Entities.Shipper", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Birthdate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHashed")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordSalted")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Salary")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Shippers");
+                });
+
             modelBuilder.Entity("DataLayer.Entities.User", b =>
                 {
                     b.Property<string>("Id")
@@ -331,9 +380,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Gender")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
@@ -538,6 +584,13 @@ namespace DataLayer.Migrations
                     b.HasOne("DataLayer.Entities.User", "User")
                         .WithMany()
                         .HasForeignKey("UserID");
+                });
+
+            modelBuilder.Entity("DataLayer.Entities.Order", b =>
+                {
+                    b.HasOne("DataLayer.Entities.Shipper", "Shipper")
+                        .WithMany()
+                        .HasForeignKey("ShipperID");
                 });
 
             modelBuilder.Entity("DataLayer.Entities.OrderItem", b =>

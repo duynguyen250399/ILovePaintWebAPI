@@ -19,7 +19,6 @@ namespace DataLayer.Data
         public DbSet<Provider> Providers { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Order> Orders { get; set; }     
-        public DbSet<Shipper> Shippers { get; set; }
         public DbSet<ProductComment> ProductComments { get; set; }
         public DbSet<CommentReply> CommentReplies { get; set; }
 

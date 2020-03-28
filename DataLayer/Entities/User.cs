@@ -13,5 +13,6 @@ namespace DataLayer.Entities
         public string Image { get; set; }
         public Nullable<int> RewardPoints { get; set; }
         public DateTime? Birthdate { get; set; }
+        public bool Gender { get; set; }
     }
 }

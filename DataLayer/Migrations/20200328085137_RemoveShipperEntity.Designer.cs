@@ -4,14 +4,16 @@ using DataLayer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DataLayer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200328085137_RemoveShipperEntity")]
+    partial class RemoveShipperEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,7 +218,7 @@ namespace DataLayer.Migrations
                     b.Property<DateTime>("CommentDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasDefaultValue(new DateTime(2020, 3, 28, 16, 25, 1, 530, DateTimeKind.Local).AddTicks(301));
+                        .HasDefaultValue(new DateTime(2020, 3, 28, 15, 51, 37, 404, DateTimeKind.Local).AddTicks(4374));
 
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
@@ -331,9 +333,6 @@ namespace DataLayer.Migrations
 
                     b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Gender")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");

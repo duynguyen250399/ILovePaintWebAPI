@@ -29,8 +29,7 @@ namespace DataLayer.Entities
         public Nullable<int> Status { get; set; }
         public Nullable<bool> IsMember { get; set; }
 
-        public virtual IEnumerable<OrderItem> OrderItems { get; set; }
-        public Nullable<int> ShipperID { get; set; }
-        public virtual Shipper Shipper { get; set; }
+        public virtual IEnumerable<OrderItem> OrderItems { get; set; }   
+   
     }
 }

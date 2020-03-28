@@ -47,7 +47,9 @@ namespace ILovePaintWebAPI.Controllers
                     Quantity = item.Quantity,
                     Amount = item.Amount,
                     UnitPrice = item.UnitPrice,
-                    VolumeValue = item.VolumeValue
+                    VolumeValue = item.VolumeValue,
+                    ColorName = item.ColorName,
+                    ColorCode = item.ColorCode
                 };
                 orderItemEmails.Add(i);
             }

@@ -25,7 +25,6 @@ using ServiceLayer.OrderService;
 using ServiceLayer.ProductService;
 using ServiceLayer.ProductVolumeService;
 using ServiceLayer.ProviderService;
-using ServiceLayer.ShipperService;
 using ServiceLayer.UserService;
 
 namespace ILovePaintWebAPI
@@ -96,8 +95,7 @@ namespace ILovePaintWebAPI
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IShipperService, ShipperService>();
+            services.AddScoped<IUserService, UserService>();     
             services.AddScoped<IProductVolumeService, ProductVolumeService>();
             services.AddScoped<IProductCommentService, ProductCommentService>();
         }

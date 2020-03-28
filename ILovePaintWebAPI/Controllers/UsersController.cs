@@ -87,6 +87,7 @@ namespace ILovePaintWebAPI.Controllers
 
             return Ok(new {                
                 FullName = user.FullName,
+                Gender = user.Gender,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
@@ -177,7 +178,7 @@ namespace ILovePaintWebAPI.Controllers
 
             if (result.Succeeded)
             {
-                return Ok(new { message = "Confirm account successfully!" });
+                return Redirect("http://localhost:4200");
             }
 
             return Content("Failed to confirm account!");

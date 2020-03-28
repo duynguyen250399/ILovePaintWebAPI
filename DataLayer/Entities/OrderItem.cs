@@ -19,6 +19,8 @@ namespace DataLayer.Entities
         public float VolumeValue { get; set; }
         [NotMapped]
         public string ProductName { get; set; }
+        public string ColorName { get; set; }
+        public string ColorCode { get; set; }
 
 
     }

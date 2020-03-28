@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200327133153_InitialCreate3.cs" />
     <Compile Remove="Migrations\20200327133153_InitialCreate3.Designer.cs" />
+    <Compile Remove="Migrations\20200328080634_MofidyOrderItemEntity.cs" />
+    <Compile Remove="Migrations\20200328080634_MofidyOrderItemEntity.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,6 +17,8 @@ namespace DataLayer.Models
         public float VolumeValue { get; set; }
         public float UnitPrice { get; set; }  
         public int Quantity { get; set; }
-        public float Amount { get; set; }       
+        public float Amount { get; set; }
+        public string ColorName { get; set; }
+        public string ColorCode { get; set; }
     }
 }

@@ -80,8 +80,20 @@ namespace ServiceLayer.OrderService
                 return null;
             }
 
-            order.Status = model.Status;
-            order.ShipperID = model.ShipperID;
+            order.Status = model.Status;   
+
+            if(order.Status == 3) // order is finished
+            {
+                // decrease quantity of products corresponding ordered items
+                var orderItems = _context.OrderItems.Where(i => i.OrderID == order.ID).ToList();
+                foreach (var item in orderItems)
+                {                   
+                    var updatingProductVolume = _context.ProductVolumes
+                        .Where(pv => pv.ProductID == item.ProductID && pv.VolumeValue == item.VolumeValue).FirstOrDefault();
+                    updatingProductVolume.Quantity = updatingProductVolume.Quantity - item.Quantity;
+                    _context.ProductVolumes.Update(updatingProductVolume);
+                }
+            }
 
             _context.Orders.Update(order);
             _context.SaveChanges();
