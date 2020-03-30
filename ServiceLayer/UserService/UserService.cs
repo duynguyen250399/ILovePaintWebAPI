@@ -27,5 +27,30 @@ namespace ServiceLayer.UserService
 
             return user;
         }
+
+        public User UpdateUser(UserProfileModel model)
+        {
+            var user = _context.Users.Where(u => u.Id == model.UserID)
+                .FirstOrDefault();
+            if(user == null)
+            {
+                return null;
+            }
+
+            user.FullName = model.FullName;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;
+           
+            user.Gender = model.Gender;
+
+            // process user avatar upload
+            string path = @"/uploads/images/users/" + model.Avatar.FileName;
+            user.Image = path;
+
+            _context.Users.Update(user);
+            _context.SaveChanges();
+
+            return user;
+        }
     }
 }

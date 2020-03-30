@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using ServiceLayer.CommentService;
 
 namespace ILovePaintWebAPI.Controllers
@@ -14,10 +15,12 @@ namespace ILovePaintWebAPI.Controllers
     public class CommentsController : ControllerBase
     {
         private readonly IProductCommentService _commentService;
+        private readonly IConfiguration _configuration;
 
-        public CommentsController(IProductCommentService commentService)
+        public CommentsController(IProductCommentService commentService, IConfiguration configuration)
         {
             _commentService = commentService;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -29,6 +32,14 @@ namespace ILovePaintWebAPI.Controllers
             if(comments == null)
             {
                 return NotFound(new { message = "Comments not found!" });
+            }
+
+            foreach (var comment in comments)
+            {
+                if (!string.IsNullOrEmpty(comment.User.Image))
+                {
+                    comment.User.Image = _configuration["backendEnv:host"] + "/api/users/images/" + comment.User.Id;
+                }
             }
 
             return Ok(comments);

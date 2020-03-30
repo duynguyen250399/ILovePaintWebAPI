@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
@@ -91,9 +92,8 @@ namespace ILovePaintWebAPI.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
-                RewardPoints = user.RewardPoints,
-                Birthdate = user.Birthdate,
-                Image = user.Image
+                RewardPoints = user.RewardPoints,               
+                Image = user.Image == null ? null : _configuration["backendEnv:host"] + "/api/users/images/" + user.Id
             });
         }
 
@@ -125,8 +125,7 @@ namespace ILovePaintWebAPI.Controllers
                 UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,
-                Birthdate = model.Birthdate,
+                PhoneNumber = model.PhoneNumber,           
                 Address = model.Address,
                 EmailConfirmed = false,
                 RewardPoints = 0
@@ -213,8 +212,7 @@ namespace ILovePaintWebAPI.Controllers
                 UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,
-                Birthdate = model.Birthdate,
+                PhoneNumber = model.PhoneNumber,            
                 Address = model.Address,
                 EmailConfirmed = true,
                 RewardPoints = 0
@@ -247,8 +245,118 @@ namespace ILovePaintWebAPI.Controllers
         public async Task<IActionResult> GetAdminInfo()
         {
             var admin = await _userManager.FindByNameAsync("admin");
+            if(admin == null)
+            {
+                return NotFound(new { messgage = "Admin not found!" });
+            }
 
             return Ok(admin);
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "Admin,Member")]
+        public async Task<IActionResult> UpdateUserProfile([FromForm] UserProfileModel model)
+        {
+            if(model == null)
+            {
+                return BadRequest(new { message = "Profile is null!" });
+            }
+
+            if(string.IsNullOrEmpty(model.UserID)) {
+                return BadRequest(new { message = "Can not find user profile!" });
+            }
+
+            var user = await _userManager.FindByIdAsync(model.UserID);
+
+            if(user == null)
+            {
+                return BadRequest(new { message = "Can not find user!" });
+            }
+
+            user.FullName = model.FullName;
+            user.Address = model.Address;
+            user.PhoneNumber = model.PhoneNumber;        
+            user.Gender = model.Gender;
+
+            // process user avatar upload
+            if(model.Avatar != null && model.Avatar.Length > 0)
+            {
+
+                // delete old avatar file if exists
+                if (!string.IsNullOrEmpty(user.Image))
+                {
+                    string pathToDelete = _env.WebRootPath + user.Image.Replace("/", "\\");
+                    if (System.IO.File.Exists(pathToDelete))
+                    {
+                        System.IO.File.Delete(pathToDelete);
+                    }
+                }
+                
+                // generate image file name
+                var uuid = System.Guid.NewGuid().ToString();
+                string path = @"/uploads/images/users/" + "iLovePaint-" 
+                    + model.UserID + "-" 
+                    + uuid + "-" + model.Avatar.FileName;
+                user.Image = path;
+
+                string uploadPath = path.Replace("/", "\\");
+
+                // create new directory if not exist
+                if (!Directory.Exists(_env.WebRootPath + @"\uploads\images\users\"))
+                {
+                    Directory.CreateDirectory(_env.WebRootPath + @"\uploads\images\users\");
+                }
+
+                using (var stream = System.IO.File.Create(_env.WebRootPath + uploadPath))
+                {
+                    await model.Avatar.CopyToAsync(stream);
+                    await stream.FlushAsync();
+                }
+            }
+            
+            
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+            {
+                return Ok(new
+                {
+                    status = "success",
+                    message = "user profile updated",
+                    model = model
+                }); ;
+            }
+            else
+            {
+                return BadRequest(new { message = "Error when updating profile!" });
+            }
+        }
+
+        [HttpGet]
+        [Route("images/{userID}")]
+        public async Task<IActionResult> GetUserImage(string userID)
+        {
+            var user = await _userManager.FindByIdAsync(userID);
+            if(user == null)
+            {
+                return NotFound(new { message = "User not found!" });
+            }
+
+            if (string.IsNullOrEmpty(user.Image))
+            {
+                return NotFound(new { message = "Image not found!" });
+            }
+
+            var path = _env.WebRootPath + user.Image.Replace("/", "\\");
+
+            var avatarFile = System.IO.File.OpenRead(path);
+            if(avatarFile == null)
+            {
+                return NotFound(new { message = "Image not found!" });
+            }
+
+            return File(avatarFile, "image/jpeg");
         }
 
     }
