@@ -56,7 +56,7 @@ namespace ILovePaintWebAPI.Controllers
                 return NotFound($"Product with id {id} not found!");
             }
 
-            product.Image = Utils.ImagePathToLink(product.ID);
+            product.Image = _configuration["backendEnv:host"] + "/api/products/images/" + product.ID;
 
             return Ok(product);
         }
@@ -183,7 +183,7 @@ namespace ILovePaintWebAPI.Controllers
                     Directory.CreateDirectory(_env.WebRootPath + @"\uploads\images\products\");
                 }
 
-                if (System.IO.File.Exists(_env.WebRootPath + product.Image.Replace("/", "\\"))){
+                if (!string.IsNullOrEmpty(product.Image) && System.IO.File.Exists(_env.WebRootPath + product.Image.Replace("/", "\\"))){
                     System.IO.File.Delete(_env.WebRootPath + product.Image.Replace("/", "\\"));
                 }
 

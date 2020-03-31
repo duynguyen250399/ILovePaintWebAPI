@@ -17,7 +17,7 @@ namespace DataLayer.Entities
         [Required]
         [StringLength(30)]
         public string Email { get; set; }
-        [StringLength(100)]
-        public string Image { get; set; }
+       
     }
+
 }
