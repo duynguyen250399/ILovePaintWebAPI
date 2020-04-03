@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -42,7 +41,7 @@ namespace ILovePaintWebAPI.Helpers
                     new Claim(identityOptions.ClaimsIdentity.RoleClaimType, role.FirstOrDefault())
                 }),
                 // generate expire time validation
-                Expires = DateTime.Now.AddMinutes(30),          
+                Expires = DateTime.Now.AddMinutes(30),
                 // define symmetric key and security algorithm
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature)

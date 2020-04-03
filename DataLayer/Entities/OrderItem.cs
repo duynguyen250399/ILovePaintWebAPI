@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace DataLayer.Entities
 {
@@ -12,7 +10,7 @@ namespace DataLayer.Entities
         [Required]
         public int ProductID { get; set; }
         public Product Product { get; set; }
-        public int Quantity { get; set; }     
+        public int Quantity { get; set; }
         public float Amount { get; set; }
         public Nullable<long> OrderID { get; set; }
         public float UnitPrice { get; set; }

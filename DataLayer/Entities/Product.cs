@@ -12,8 +12,8 @@ namespace DataLayer.Entities
         [StringLength(50)]
         public string Name { get; set; }
         [StringLength(300)]
-        public string Description { get; set; }                   
-        public string Image { get; set; }       
+        public string Description { get; set; }
+        public string Image { get; set; }
         public virtual IEnumerable<Color> Colors { get; set; }
         public Nullable<int> ProviderID { get; set; }
         public Nullable<int> CategoryID { get; set; }

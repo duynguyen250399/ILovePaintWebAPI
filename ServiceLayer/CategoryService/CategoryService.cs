@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ServiceLayer.CategoryService
 {
@@ -19,7 +17,7 @@ namespace ServiceLayer.CategoryService
         }
 
         public async Task<Category> AddCategory(Category category)
-        {        
+        {
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
@@ -65,7 +63,7 @@ namespace ServiceLayer.CategoryService
         }
 
         public async Task<Category> UpdateCategory(Category category)
-        {         
+        {
             _context.Categories.Update(category);
             await _context.SaveChangesAsync();
 

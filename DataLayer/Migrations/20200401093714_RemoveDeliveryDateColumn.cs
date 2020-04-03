@@ -3,22 +3,22 @@ using System;
 
 namespace DataLayer.Migrations
 {
-    public partial class RemoveBirthdateColumn : Migration
+    public partial class RemoveDeliveryDateColumn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Birthdate",
-                table: "AspNetUsers");
+                name: "DeliveryDate",
+                table: "Orders");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CommentDate",
                 table: "ProductComments",
                 nullable: false,
-                defaultValue: new DateTime(2020, 3, 30, 11, 38, 29, 780, DateTimeKind.Local).AddTicks(4794),
+                defaultValue: new DateTime(2020, 4, 1, 16, 37, 14, 315, DateTimeKind.Local).AddTicks(45),
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValue: new DateTime(2020, 3, 28, 16, 25, 1, 530, DateTimeKind.Local).AddTicks(301));
+                oldDefaultValue: new DateTime(2020, 3, 31, 11, 3, 10, 555, DateTimeKind.Local).AddTicks(9317));
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -28,13 +28,13 @@ namespace DataLayer.Migrations
                 table: "ProductComments",
                 type: "datetime2",
                 nullable: false,
-                defaultValue: new DateTime(2020, 3, 28, 16, 25, 1, 530, DateTimeKind.Local).AddTicks(301),
+                defaultValue: new DateTime(2020, 3, 31, 11, 3, 10, 555, DateTimeKind.Local).AddTicks(9317),
                 oldClrType: typeof(DateTime),
-                oldDefaultValue: new DateTime(2020, 3, 30, 11, 38, 29, 780, DateTimeKind.Local).AddTicks(4794));
+                oldDefaultValue: new DateTime(2020, 4, 1, 16, 37, 14, 315, DateTimeKind.Local).AddTicks(45));
 
             migrationBuilder.AddColumn<DateTime>(
-                name: "Birthdate",
-                table: "AspNetUsers",
+                name: "DeliveryDate",
+                table: "Orders",
                 type: "datetime2",
                 nullable: true);
         }

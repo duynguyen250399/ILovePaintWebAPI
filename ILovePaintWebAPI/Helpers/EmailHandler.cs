@@ -1,11 +1,7 @@
 ﻿using DataLayer.Models;
 using Microsoft.AspNetCore.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Helpers
 {
@@ -54,9 +50,9 @@ namespace ILovePaintWebAPI.Helpers
 
         }
 
-        public bool SendAccountConfirmEmail(string email, string displayName, string subject, string confirmationLink) 
+        public bool SendAccountConfirmEmail(string email, string displayName, string subject, string confirmationLink)
         {
-            if(string.IsNullOrEmpty(displayName) || string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(confirmationLink))
+            if (string.IsNullOrEmpty(displayName) || string.IsNullOrEmpty(subject) || string.IsNullOrEmpty(confirmationLink))
             {
                 return false;
             }

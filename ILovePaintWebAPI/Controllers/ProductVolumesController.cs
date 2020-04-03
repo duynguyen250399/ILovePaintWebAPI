@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.ProductVolumeService;
 
@@ -23,19 +18,20 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPost]
         public IActionResult PostProductVolume(ProductVolume productVolume)
         {
-            if(productVolume == null)
+            if (productVolume == null)
             {
                 return BadRequest(new { message = "Product Volume info is invalid!" });
             }
 
             var newProductVolume = _productVolumeService.AddProductVolume(productVolume);
 
-            if(newProductVolume == null)
+            if (newProductVolume == null)
             {
                 return BadRequest(new { message = "This product volume is already existed!" });
             }
 
-            return Ok(new { 
+            return Ok(new
+            {
                 message = "Product volume added",
                 data = newProductVolume
             });
@@ -44,7 +40,7 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPut]
         public IActionResult UpdateProductVolume(ProductVolume productVolume)
         {
-            if(productVolume == null)
+            if (productVolume == null)
             {
                 return BadRequest(new { message = "Product volume is null" });
             }

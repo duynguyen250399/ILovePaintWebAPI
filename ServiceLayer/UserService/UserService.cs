@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using DataLayer.Models;
+using System.Linq;
 
 namespace ServiceLayer.UserService
 {
@@ -32,7 +28,7 @@ namespace ServiceLayer.UserService
         {
             var user = _context.Users.Where(u => u.Id == model.UserID)
                 .FirstOrDefault();
-            if(user == null)
+            if (user == null)
             {
                 return null;
             }
@@ -40,7 +36,7 @@ namespace ServiceLayer.UserService
             user.FullName = model.FullName;
             user.Address = model.Address;
             user.PhoneNumber = model.PhoneNumber;
-           
+
             user.Gender = model.Gender;
 
             // process user avatar upload

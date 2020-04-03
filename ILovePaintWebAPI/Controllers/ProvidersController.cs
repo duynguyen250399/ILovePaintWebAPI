@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.ProviderService;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -25,7 +22,7 @@ namespace ILovePaintWebAPI.Controllers
         public IActionResult GetProviders()
         {
             var providers = _providerService.GetAllProviders();
-            if(providers.ToList().Count == 0)
+            if (providers.ToList().Count == 0)
             {
                 return NotFound("Providers not found!");
             }
@@ -38,7 +35,7 @@ namespace ILovePaintWebAPI.Controllers
         public IActionResult GetProvider(int id)
         {
             var provider = _providerService.GetProviderById(id);
-            if(provider == null)
+            if (provider == null)
             {
                 return NotFound($"Provider with id {id} not found!");
             }
@@ -49,7 +46,7 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> PostProvider(Provider provider)
         {
-            if(provider == null)
+            if (provider == null)
             {
                 return BadRequest("Provider is invalid!");
             }
@@ -62,7 +59,7 @@ namespace ILovePaintWebAPI.Controllers
         public async Task<ActionResult> DeleteProvider(int id)
         {
             var provider = await _providerService.DeleteProvider(id);
-            if(provider == null)
+            if (provider == null)
             {
                 return NotFound($"Provider with id {provider.ID} not found!");
             }
@@ -73,19 +70,19 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateProvider(Provider provider)
         {
-            if(provider == null)
+            if (provider == null)
             {
                 return BadRequest("Invalid provider!");
-            } 
+            }
 
-            if(provider.ID == 0)
+            if (provider.ID == 0)
             {
                 return BadRequest("Missing provider ID field!");
             }
 
             var oldProvider = _providerService.GetProviderById(provider.ID);
-            
-            if(oldProvider == null)
+
+            if (oldProvider == null)
             {
                 return NotFound($"Provider with id {provider.ID} not found!");
             }

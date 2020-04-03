@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer.Entities;
+﻿using DataLayer.Entities;
 using DataLayer.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.ColorService;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -24,21 +20,21 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> AddColor(Color color)
         {
-            if(color == null)
+            if (color == null)
             {
                 return BadRequest(new { message = "Color is null!" });
             }
 
-            if(color.ProductID == 0)
+            if (color.ProductID == 0)
             {
                 return BadRequest(new { message = "Missing product id field!" });
             }
 
             var newColor = await _colorService.AddColorAsync(color);
 
-            if(newColor == null)
+            if (newColor == null)
             {
-                return BadRequest(new { message = "Duplicate color" });
+                return BadRequest(new { message = "Duplicated color" });
             }
 
             return Ok(new
@@ -60,7 +56,7 @@ namespace ILovePaintWebAPI.Controllers
 
             var newColors = await _colorService.AddColorsAsync(model.Colors);
 
-            if(newColors == null)
+            if (newColors == null)
             {
                 return BadRequest(new { message = "Duplicate colors" });
             }
@@ -78,7 +74,7 @@ namespace ILovePaintWebAPI.Controllers
         public IActionResult GetColors(int productId)
         {
             var colors = _colorService.GetColors(productId);
-            if(colors == null)
+            if (colors == null)
             {
                 return NotFound(new { message = "Colors not found!" });
             }
@@ -91,7 +87,7 @@ namespace ILovePaintWebAPI.Controllers
         public IActionResult DeleteColor(int id)
         {
             var deletedColor = _colorService.DeleteColor(id);
-            if(deletedColor == null)
+            if (deletedColor == null)
             {
                 return NotFound(new { message = "Color not found!" });
             }
@@ -99,24 +95,32 @@ namespace ILovePaintWebAPI.Controllers
             return Ok(new
             {
                 status = "success",
-                message = "Color deleted"           
+                message = "Color deleted"
             });
         }
 
         [HttpPut]
         public IActionResult UpdateColor(Color color)
         {
-            if(color == null)
+            if (color == null)
             {
                 return BadRequest(new { message = "Color is null!" });
             }
 
-            if(color.ID == 0)
+            if (color.ID == 0)
             {
                 return BadRequest(new { message = "Missing color id!" });
             }
 
             var updatedColor = _colorService.UpdateColor(color);
+
+            if (updatedColor == null)
+            {
+                return BadRequest(new
+                {
+                    message = "Duplicated color"
+                });
+            }
 
             return Ok(new
             {

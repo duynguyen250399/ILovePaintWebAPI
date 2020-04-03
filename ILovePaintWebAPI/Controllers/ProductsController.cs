@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DataLayer.Entities;
+using DataLayer.Models;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using ServiceLayer.CategoryService;
+using ServiceLayer.ProductService;
+using ServiceLayer.ProviderService;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using DataLayer.Entities;
-using DataLayer.Models;
-using ILovePaintWebAPI.Helpers;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using ServiceLayer.ProductService;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -19,12 +17,19 @@ namespace ILovePaintWebAPI.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly ICategoryService _categoryService;
+        private readonly IProviderService _providerService;
+
         private readonly IWebHostEnvironment _env;
         private readonly IConfiguration _configuration;
 
-        public ProductsController(IProductService productService, IWebHostEnvironment env, IConfiguration configuration)
+        public ProductsController(IProductService productService, ICategoryService categoryService,
+            IProviderService providerService, IWebHostEnvironment env,
+            IConfiguration configuration)
         {
             _productService = productService;
+            _categoryService = categoryService;
+            _providerService = providerService;
             _env = env;
             _configuration = configuration;
         }
@@ -136,7 +141,11 @@ namespace ILovePaintWebAPI.Controllers
 
             var p = await _productService.AddProductAsync(product);
 
-            return Ok(p);
+            return Ok(new
+            {
+                status = "success",
+                message = "product added"
+            });
         }
 
         [HttpDelete]
@@ -149,7 +158,11 @@ namespace ILovePaintWebAPI.Controllers
                 return BadRequest("Product is null!");
             }
 
-            return Ok(product);
+            return Ok(new
+            {
+                status = "success",
+                message = "product deleted"
+            });
         }
 
         [HttpPut]
@@ -168,8 +181,21 @@ namespace ILovePaintWebAPI.Controllers
             }
 
             product.Name = model.ProductName;
+
+            // find category
+            var category = _categoryService.GetCategoryById(model.CategoryID);
+            var provider = _providerService.GetProviderById(model.ProviderID);
+            if (category == null || provider == null)
+            {
+                return NotFound(new { message = "Provider or category not found!" });
+            }
+
             product.CategoryID = model.CategoryID;
+            product.Category = category;
+
             product.ProviderID = model.ProviderID;
+            product.Provider = provider;
+
             product.Description = model.Description;
 
             if (model.Image != null && model.Image.Length > 0)
@@ -183,7 +209,8 @@ namespace ILovePaintWebAPI.Controllers
                     Directory.CreateDirectory(_env.WebRootPath + @"\uploads\images\products\");
                 }
 
-                if (!string.IsNullOrEmpty(product.Image) && System.IO.File.Exists(_env.WebRootPath + product.Image.Replace("/", "\\"))){
+                if (!string.IsNullOrEmpty(product.Image) && System.IO.File.Exists(_env.WebRootPath + product.Image.Replace("/", "\\")))
+                {
                     System.IO.File.Delete(_env.WebRootPath + product.Image.Replace("/", "\\"));
                 }
 
@@ -198,7 +225,11 @@ namespace ILovePaintWebAPI.Controllers
 
             Product newProduct = _productService.UpdateProduct(product);
 
-            return Ok(newProduct);
+            return Ok(new
+            {
+                status = "success",
+                message = "product updated"
+            });
 
         }
     }

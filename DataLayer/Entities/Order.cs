@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace DataLayer.Entities
 {
@@ -19,7 +17,6 @@ namespace DataLayer.Entities
         public string Email { get; set; }
         public string Notes { get; set; }
         public DateTime? OrderDate { get; set; }
-        public DateTime? DeliveryDate { get; set; }
         /*
          0 - Watting
          1 - Packed
@@ -29,7 +26,7 @@ namespace DataLayer.Entities
         public Nullable<int> Status { get; set; }
         public Nullable<bool> IsMember { get; set; }
 
-        public virtual IEnumerable<OrderItem> OrderItems { get; set; }   
-   
+        public virtual IEnumerable<OrderItem> OrderItems { get; set; }
+
     }
 }

@@ -1,31 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DataLayer.Data;
 using DataLayer.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using ServiceLayer.CategoryService;
 using ServiceLayer.ColorService;
 using ServiceLayer.CommentService;
-using ServiceLayer.ImageService;
 using ServiceLayer.OrderService;
 using ServiceLayer.ProductService;
 using ServiceLayer.ProductVolumeService;
 using ServiceLayer.ProviderService;
 using ServiceLayer.UserService;
+using System.Text;
 
 namespace ILovePaintWebAPI
 {
@@ -82,20 +74,19 @@ namespace ILovePaintWebAPI
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    RequireExpirationTime = true               
+                    RequireExpirationTime = true
                 };
             });
 
-         
+
             services.AddCors();
 
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IColorService, ColorService>();
             services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IImageService, ImageService>();
             services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IUserService, UserService>();     
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<IProductVolumeService, ProductVolumeService>();
             services.AddScoped<IProductCommentService, ProductCommentService>();
         }
@@ -108,7 +99,7 @@ namespace ILovePaintWebAPI
                 app.UseDeveloperExceptionPage();
             }
 
-          
+
 
             app.UseCors(options =>
             {

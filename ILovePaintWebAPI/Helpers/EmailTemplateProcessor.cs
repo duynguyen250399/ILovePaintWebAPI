@@ -1,12 +1,8 @@
-﻿
-using DataLayer.Entities;
-using DataLayer.Models;
+﻿using DataLayer.Models;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Helpers
 {
@@ -51,7 +47,7 @@ namespace ILovePaintWebAPI.Helpers
             {
                 string row = "<tr style=\"background - color: white; border - bottom: 1px solid gray; \">" +
                                 $"<td style = \"padding: 25px 5px;\" >{count++}</td>" +
-                                $"<td>{item.ProductName} {item.VolumeValue}(L) - <b style='color: {item.ColorCode}'>{item.ColorName} ({item.ColorCode})</b></td>" +
+                                $"<td>{item.ProductName} {item.VolumeValue}(L) - <b style='color: {item.ColorCode}'>{item.ColorName}</b></td>" +
                                 $"<td>{item.UnitPrice}</td>" +
                                 $"<td>{item.Quantity}</td >" +
                                 $"<td><b>{item.UnitPrice * item.Quantity}</b></td >" +

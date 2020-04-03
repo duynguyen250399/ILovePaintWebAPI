@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DataLayer.Entities;
+﻿using DataLayer.Entities;
 using DataLayer.Models;
 using ILovePaintWebAPI.Helpers;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.OrderService;
 using ServiceLayer.UserService;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -74,21 +73,26 @@ namespace ILovePaintWebAPI.Controllers
             emailHandler.SendOderConfirmEmail(orderEmail);
 
             // plus reward points for member after purchasing products
-            var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
-            var user = await _userManager.FindByIdAsync(userId);
+
             var rewardPointSuccess = "";
-            if (user != null)
+            if (User.Claims != null && User.Claims.ToList().Count > 0)
             {
-                var updatedUser = _userService.AddRewardPoints(user, (int)Math.Floor(total / 10000));
-                if(updatedUser != null)
+                var userId = User.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).FirstOrDefault().Value;
+                var user = await _userManager.FindByIdAsync(userId);
+
+                if (user != null)
                 {
-                    rewardPointSuccess = "Success";
+                    var updatedUser = _userService.AddRewardPoints(user, (int)Math.Floor(total / 10000));
+                    if (updatedUser != null)
+                    {
+                        rewardPointSuccess = "Success";
+                    }
+                    else
+                    {
+                        rewardPointSuccess = "Fail";
+                    }
                 }
-                else
-                {
-                    rewardPointSuccess = "Fail";
-                }
-             }
+            }
 
             return Ok(new
             {

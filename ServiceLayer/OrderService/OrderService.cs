@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using DataLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ServiceLayer.OrderService
 {
@@ -24,7 +21,7 @@ namespace ServiceLayer.OrderService
             _context.Orders.Add(orderData.Order);
             _context.SaveChanges();
 
-            foreach(OrderItem item in orderData.OrderItems)
+            foreach (OrderItem item in orderData.OrderItems)
             {
                 item.OrderID = orderData.Order.ID;
             }
@@ -38,13 +35,13 @@ namespace ServiceLayer.OrderService
         public Order DeleteOrder(long id)
         {
             var orderItems = _context.OrderItems.Where(i => i.OrderID == id);
-            if(orderItems != null || orderItems.ToList().Count > 0)
+            if (orderItems != null || orderItems.ToList().Count > 0)
             {
                 _context.OrderItems.RemoveRange(orderItems);
             }
 
             var order = _context.Orders.Where(o => o.ID == id).FirstOrDefault();
-            if(order == null)
+            if (order == null)
             {
                 return null;
             }
@@ -67,27 +64,27 @@ namespace ServiceLayer.OrderService
         {
             return _context.Orders
                 .Include(order => order.OrderItems)
-                    .ThenInclude(i => i.Product);            
-            
+                    .ThenInclude(i => i.Product);
+
         }
 
         public Order UpdateOrder(UpdateOrderModel model)
         {
             var order = _context.Orders.Where(o => o.ID == model.OrderID)
                 .FirstOrDefault();
-            if(order == null)
+            if (order == null)
             {
                 return null;
             }
 
-            order.Status = model.Status;   
+            order.Status = model.Status;
 
-            if(order.Status == 3) // order is finished
+            if (order.Status == 3) // order is finished
             {
                 // decrease quantity of products corresponding ordered items
                 var orderItems = _context.OrderItems.Where(i => i.OrderID == order.ID).ToList();
                 foreach (var item in orderItems)
-                {                   
+                {
                     var updatingProductVolume = _context.ProductVolumes
                         .Where(pv => pv.ProductID == item.ProductID && pv.VolumeValue == item.VolumeValue).FirstOrDefault();
                     updatingProductVolume.Quantity = updatingProductVolume.Quantity - item.Quantity;

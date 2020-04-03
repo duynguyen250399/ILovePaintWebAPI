@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ServiceLayer.ColorService
 {
@@ -36,8 +34,8 @@ namespace ServiceLayer.ColorService
         private bool ColorExist(Color color)
         {
             return _context.Colors
-                .Where(c => (c.ColorCode.ToLower() == color.ColorCode.ToLower() || 
-                c.Name.ToLower() == color.Name.ToLower()) && c.ProductID == color.ProductID)
+                .Where(c => (c.ColorCode.Equals(color.ColorCode) ||
+                c.Name.Equals(color.Name)) && c.ProductID == color.ProductID)
                 .AsNoTracking()
                .FirstOrDefault() != null;
         }
@@ -62,7 +60,7 @@ namespace ServiceLayer.ColorService
         public Color DeleteColor(int id)
         {
             var color = _context.Colors.Where(c => c.ID == id).FirstOrDefault();
-            if(color == null)
+            if (color == null)
             {
                 return null;
             }

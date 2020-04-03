@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using ServiceLayer.CategoryService;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -23,7 +20,7 @@ namespace ILovePaintWebAPI.Controllers
         public IActionResult GetCategories()
         {
             var categories = _categoryService.GetAllCategories();
-            if(categories.ToList().Count == 0)
+            if (categories.ToList().Count == 0)
             {
                 return NotFound("Categories not found!");
             }
@@ -47,7 +44,7 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateCategory(Category category)
         {
-            if(category == null)
+            if (category == null)
             {
                 return BadRequest("Category not found!");
             }
@@ -60,7 +57,7 @@ namespace ILovePaintWebAPI.Controllers
         public async Task<ActionResult> DeleteCategory(int id)
         {
             Category category = await _categoryService.DeleteCategory(id);
-            if(category == null)
+            if (category == null)
             {
                 return NotFound($"Category with id {category.ID} not found!");
             }
@@ -71,18 +68,18 @@ namespace ILovePaintWebAPI.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateCategory(Category newCategory)
         {
-            if(newCategory == null)
+            if (newCategory == null)
             {
                 return BadRequest("Invalid category!");
             }
 
-            if(newCategory.ID == 0)
+            if (newCategory.ID == 0)
             {
                 return BadRequest("Missing Category ID field!");
             }
 
             Category oldCategory = _categoryService.GetCategoryById(newCategory.ID);
-            if(oldCategory == null)
+            if (oldCategory == null)
             {
                 return NotFound($"Category with id {newCategory.ID} not found!");
             }

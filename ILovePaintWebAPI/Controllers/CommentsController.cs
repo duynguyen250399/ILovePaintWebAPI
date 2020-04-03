@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DataLayer.Entities;
-using Microsoft.AspNetCore.Http;
+﻿using DataLayer.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using ServiceLayer.CommentService;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -29,7 +25,7 @@ namespace ILovePaintWebAPI.Controllers
         {
             var comments = _commentService.GetAllComments(productId);
 
-            if(comments == null)
+            if (comments == null)
             {
                 return NotFound(new { message = "Comments not found!" });
             }
@@ -47,12 +43,12 @@ namespace ILovePaintWebAPI.Controllers
 
         public async Task<IActionResult> PostComment(ProductComment comment)
         {
-            if(comment == null)
+            if (comment == null)
             {
                 return BadRequest(new { message = "Comment is null!" });
             }
 
-            if(string.IsNullOrEmpty(comment.Content))
+            if (string.IsNullOrEmpty(comment.Content))
             {
                 return BadRequest(new { message = "Missing comment content" });
             }
@@ -75,7 +71,7 @@ namespace ILovePaintWebAPI.Controllers
         [Route("reply")]
         public async Task<IActionResult> PostCommentReply(CommentReply reply)
         {
-            if(reply == null)
+            if (reply == null)
             {
                 return BadRequest(new { message = "Reply is null!" });
             }

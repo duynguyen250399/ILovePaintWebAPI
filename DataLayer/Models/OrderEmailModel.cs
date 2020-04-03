@@ -1,7 +1,5 @@
 ﻿using DataLayer.Entities;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace DataLayer.Models
 {
@@ -15,7 +13,7 @@ namespace DataLayer.Models
     {
         public string ProductName { get; set; }
         public float VolumeValue { get; set; }
-        public float UnitPrice { get; set; }  
+        public float UnitPrice { get; set; }
         public int Quantity { get; set; }
         public float Amount { get; set; }
         public string ColorName { get; set; }

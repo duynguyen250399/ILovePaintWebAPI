@@ -1,22 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Entities;
+﻿using DataLayer.Entities;
 using DataLayer.Models;
 using ILovePaintWebAPI.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using ServiceLayer.UserService;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace ILovePaintWebAPI.Controllers
 {
@@ -29,7 +23,7 @@ namespace ILovePaintWebAPI.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly UserManager<User> _userManager;
 
-        public UsersController(IUserService userService, 
+        public UsersController(IUserService userService,
             IConfiguration configuration,
             IWebHostEnvironment env,
             UserManager<User> userManager)
@@ -39,13 +33,13 @@ namespace ILovePaintWebAPI.Controllers
             _userManager = userManager;
             _env = env;
         }
-    
+
         [HttpPost]
         [Route("authenticate")]
         public async Task<IActionResult> UserLogin(AuthenticateModel model)
         {
             var user = await _userManager.FindByNameAsync(model.Username);
-            if(user == null)
+            if (user == null)
             {
                 return BadRequest(new { message = "Incorrect username or password!" });
             }
@@ -81,27 +75,28 @@ namespace ILovePaintWebAPI.Controllers
 
             var user = await _userManager.FindByIdAsync(userId);
 
-            if(user == null)
+            if (user == null)
             {
                 return NotFound(new { message = "User not found!" });
             }
 
-            return Ok(new {                
+            return Ok(new
+            {
                 FullName = user.FullName,
                 Gender = user.Gender,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 Address = user.Address,
-                RewardPoints = user.RewardPoints,               
+                RewardPoints = user.RewardPoints,
                 Image = user.Image == null ? null : _configuration["backendEnv:host"] + "/api/users/images/" + user.Id
             });
         }
 
 
-        [HttpPost]    
+        [HttpPost]
         public async Task<IActionResult> RegisterUser(UserRegistrationModel model)
         {
-            if(model == null)
+            if (model == null)
             {
                 return BadRequest(new
                 {
@@ -110,12 +105,12 @@ namespace ILovePaintWebAPI.Controllers
             }
 
             var existingUser = await _userManager.FindByNameAsync(model.Username);
-            if(existingUser != null)
+            if (existingUser != null)
             {
-                return BadRequest(new { message = "This username is already taken!"});
+                return BadRequest(new { message = "This username is already taken!" });
             }
             existingUser = await _userManager.FindByEmailAsync(model.Email);
-            if(existingUser != null)
+            if (existingUser != null)
             {
                 return BadRequest(new { message = "This email is already taken!" });
             }
@@ -125,7 +120,7 @@ namespace ILovePaintWebAPI.Controllers
                 UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,           
+                PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 EmailConfirmed = false,
                 RewardPoints = 0
@@ -155,15 +150,15 @@ namespace ILovePaintWebAPI.Controllers
             }
 
             return Content("Failed to register account!");
-           
+
         }
 
-        [HttpGet]       
+        [HttpGet]
         [Route("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound(new { messgage = "User not found!" });
             }
@@ -184,7 +179,7 @@ namespace ILovePaintWebAPI.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         [Route("admin")]
         public async Task<IActionResult> RegisterAdmin(UserRegistrationModel model)
         {
@@ -212,7 +207,7 @@ namespace ILovePaintWebAPI.Controllers
                 UserName = model.Username,
                 Email = model.Email,
                 FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,            
+                PhoneNumber = model.PhoneNumber,
                 Address = model.Address,
                 EmailConfirmed = true,
                 RewardPoints = 0
@@ -245,7 +240,7 @@ namespace ILovePaintWebAPI.Controllers
         public async Task<IActionResult> GetAdminInfo()
         {
             var admin = await _userManager.FindByNameAsync("admin");
-            if(admin == null)
+            if (admin == null)
             {
                 return NotFound(new { messgage = "Admin not found!" });
             }
@@ -257,29 +252,30 @@ namespace ILovePaintWebAPI.Controllers
         [Authorize(Roles = "Admin,Member")]
         public async Task<IActionResult> UpdateUserProfile([FromForm] UserProfileModel model)
         {
-            if(model == null)
+            if (model == null)
             {
                 return BadRequest(new { message = "Profile is null!" });
             }
 
-            if(string.IsNullOrEmpty(model.UserID)) {
+            if (string.IsNullOrEmpty(model.UserID))
+            {
                 return BadRequest(new { message = "Can not find user profile!" });
             }
 
             var user = await _userManager.FindByIdAsync(model.UserID);
 
-            if(user == null)
+            if (user == null)
             {
                 return BadRequest(new { message = "Can not find user!" });
             }
 
             user.FullName = model.FullName;
             user.Address = model.Address;
-            user.PhoneNumber = model.PhoneNumber;        
+            user.PhoneNumber = model.PhoneNumber;
             user.Gender = model.Gender;
 
             // process user avatar upload
-            if(model.Avatar != null && model.Avatar.Length > 0)
+            if (model.Avatar != null && model.Avatar.Length > 0)
             {
 
                 // delete old avatar file if exists
@@ -291,11 +287,11 @@ namespace ILovePaintWebAPI.Controllers
                         System.IO.File.Delete(pathToDelete);
                     }
                 }
-                
+
                 // generate image file name
                 var uuid = System.Guid.NewGuid().ToString();
-                string path = @"/uploads/images/users/" + "iLovePaint-" 
-                    + model.UserID + "-" 
+                string path = @"/uploads/images/users/" + "iLovePaint-"
+                    + model.UserID + "-"
                     + uuid + "-" + model.Avatar.FileName;
                 user.Image = path;
 
@@ -313,8 +309,8 @@ namespace ILovePaintWebAPI.Controllers
                     await stream.FlushAsync();
                 }
             }
-            
-            
+
+
 
             var result = await _userManager.UpdateAsync(user);
 
@@ -338,7 +334,7 @@ namespace ILovePaintWebAPI.Controllers
         public async Task<IActionResult> GetUserImage(string userID)
         {
             var user = await _userManager.FindByIdAsync(userID);
-            if(user == null)
+            if (user == null)
             {
                 return NotFound(new { message = "User not found!" });
             }
@@ -351,7 +347,7 @@ namespace ILovePaintWebAPI.Controllers
             var path = _env.WebRootPath + user.Image.Replace("/", "\\");
 
             var avatarFile = System.IO.File.OpenRead(path);
-            if(avatarFile == null)
+            if (avatarFile == null)
             {
                 return NotFound(new { message = "Image not found!" });
             }

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
+using System.Linq;
 
 namespace ServiceLayer.ProductVolumeService
 {
@@ -21,17 +17,17 @@ namespace ServiceLayer.ProductVolumeService
         {
             var existingProductVolumes = _context.ProductVolumes
                 .Where(pv => pv.ProductID == productVolume.ProductID);
-            
-            if(existingProductVolumes != null && existingProductVolumes.ToList().Count > 0)
+
+            if (existingProductVolumes != null && existingProductVolumes.ToList().Count > 0)
             {
                 foreach (var pv in existingProductVolumes)
                 {
-                    if(pv.VolumeValue == productVolume.VolumeValue)
+                    if (pv.VolumeValue == productVolume.VolumeValue)
                     {
                         return null;
                     }
                 }
-                
+
             }
             _context.ProductVolumes.Add(productVolume);
             _context.SaveChanges();
@@ -44,7 +40,7 @@ namespace ServiceLayer.ProductVolumeService
             var productVolume = _context.ProductVolumes.Where(pv => pv.ID == id)
                 .FirstOrDefault();
 
-            if(productVolume == null)
+            if (productVolume == null)
             {
                 return null;
             }

@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 namespace ServiceLayer.ProductService
 {
     public class ProductService : IProductService
@@ -30,7 +29,7 @@ namespace ServiceLayer.ProductService
         {
             var productVolumes = _context.ProductVolumes.
                 Where(pv => pv.ProductID == id);
-            if(productVolumes != null)
+            if (productVolumes != null)
             {
                 _context.ProductVolumes.RemoveRange(productVolumes);
             }
@@ -57,12 +56,6 @@ namespace ServiceLayer.ProductService
             return product;
         }
 
-
-        public Product GetProductByColorName(string colorName)
-        {
-            throw new NotImplementedException();
-        }
-
         public Product GetProductById(int id)
         {
             var p = _context.Products
@@ -70,11 +63,11 @@ namespace ServiceLayer.ProductService
                 .Include(product => product.Category)
                 .Include(product => product.Provider)
                 .Include(product => product.Colors)
-                .Include(product => product.ProductVolumes)         
+                .Include(product => product.ProductVolumes)
                 .AsNoTracking()
                 .FirstOrDefault();
 
-          
+
             return p;
         }
 

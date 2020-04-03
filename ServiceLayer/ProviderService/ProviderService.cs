@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DataLayer.Data;
+﻿using DataLayer.Data;
 using DataLayer.Entities;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ServiceLayer.ProviderService
 {
@@ -38,7 +36,7 @@ namespace ServiceLayer.ProviderService
             }
             var provider = _context.Providers.Where(p => p.ID == id)
                 .FirstOrDefault();
-            if(provider == null)
+            if (provider == null)
             {
                 return null;
             }
